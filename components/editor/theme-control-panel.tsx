@@ -35,15 +35,7 @@ const isCommonStyleKey = (
 const ensureOklchValue = (key: string, rawValue: string) => {
   const trimmed = rawValue.trim();
 
-  if (trimmed.length === 0) {
-    return trimmed;
-  }
-
-  if (isCommonStyleKey(key)) {
-    return trimmed;
-  }
-
-  if (trimmed.toLowerCase().startsWith("oklch(")) {
+  if (trimmed.length === 0 || isCommonStyleKey(key)) {
     return trimmed;
   }
 
@@ -509,6 +501,8 @@ const ThemeControlPanel = ({
 };
 
 export default ThemeControlPanel;
+
+
 
 
 

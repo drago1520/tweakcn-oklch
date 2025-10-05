@@ -1,4 +1,4 @@
-import { appendAlphaToOklch, colorFormatter } from "./color-converter";
+import { colorFormatter, formatColorWithAlpha } from "./color-converter";
 import { applyStyleToElement } from "./apply-style-to-element";
 import { ThemeEditorState } from "../types/editor";
 import { defaultThemeState } from "../config/theme";
@@ -19,7 +19,7 @@ export const getShadowMap = (themeEditorState: ThemeEditorState) => {
   const parsedOpacity = Number.parseFloat(styles["shadow-opacity"]);
   const opacity = Number.isNaN(parsedOpacity) ? 1 : parsedOpacity;
   const color = (opacityMultiplier: number) =>
-    appendAlphaToOklch(baseOklch, opacity * opacityMultiplier);
+    formatColorWithAlpha(baseOklch, opacity * opacityMultiplier);
 
   const secondLayer = (fixedOffsetY: string, fixedBlur: string): string => {
     // Use the same offsetX as the first layer
@@ -74,4 +74,5 @@ export function setShadowVariables(themeEditorState: ThemeEditorState) {
     applyStyleToElement(root, name, value);
   });
 }
+
 
