@@ -44,8 +44,8 @@ const applyThemeColors = (
         key as (typeof COMMON_NON_COLOR_KEYS)[number]
       )
     ) {
-      const hslValue = colorFormatter(value, "hsl", "4");
-      applyStyleToElement(root, key, hslValue);
+      const oklchValue = colorFormatter(value, "oklch");
+      applyStyleToElement(root, key, oklchValue);
     }
   });
 };
@@ -67,3 +67,4 @@ export const applyThemeToElement = (
   // Apply shadow variables
   setShadowVariables(themeState);
 };
+

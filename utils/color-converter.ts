@@ -7,13 +7,25 @@ export const formatNumber = (num?: number) => {
   return num % 1 === 0 ? num : num.toFixed(4);
 };
 
+const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+export const appendAlphaToOklch = (oklchColor: string, alpha: number) => {
+  const normalizedAlpha = clamp(alpha);
+  if (!oklchColor.startsWith("oklch(") || !oklchColor.trim().endsWith(")")) {
+    return oklchColor;
+  }
+
+  const sanitized = oklchColor.replace(/\s*\/\s*[^)]+\)\s*$/, ")");
+  return sanitized.replace(/\)\s*$/, ` / ${formatNumber(normalizedAlpha)})`);
+};
+
 export const formatHsl = (hsl: Hsl) => {
   return `hsl(${formatNumber(hsl.h)} ${formatNumber(hsl.s * 100)}% ${formatNumber(hsl.l * 100)}%)`;
 };
 
 export const colorFormatter = (
   colorValue: string,
-  format: ColorFormat = "hsl",
+  format: ColorFormat = "oklch",
   tailwindVersion: "3" | "4" = "3"
 ): string => {
   try {
@@ -21,21 +33,21 @@ export const colorFormatter = (
     if (!color) throw new Error("Invalid color input");
 
     switch (format) {
-      case "hsl": {
-        const hsl = culori.converter("hsl")(color);
-        if (tailwindVersion === "4") {
-          return formatHsl(hsl);
-        }
-        return `${formatNumber(hsl.h)} ${formatNumber(hsl.s * 100)}% ${formatNumber(hsl.l * 100)}%`;
-      }
-      case "rgb":
-        return culori.formatRgb(color); // e.g., "rgb(64, 128, 192)"
+      // case "hsl": {
+      //   const hsl = culori.converter("hsl")(color);
+      //   if (tailwindVersion === "4") {
+      //     return formatHsl(hsl);
+      //   }
+      //   return `${formatNumber(hsl.h)} ${formatNumber(hsl.s * 100)}% ${formatNumber(hsl.l * 100)}%`;
+      // }
+      // case "rgb":
+      //   return culori.formatRgb(color); // e.g., "rgb(64, 128, 192)"
       case "oklch": {
         const oklch = culori.converter("oklch")(color);
         return `oklch(${formatNumber(oklch.l)} ${formatNumber(oklch.c)} ${formatNumber(oklch.h)})`;
       }
-      case "hex":
-        return culori.formatHex(color); // e.g., "#4080c0"
+      // case "hex":
+      //   return culori.formatHex(color); // e.g., "#4080c0"
       default:
         return colorValue;
     }
@@ -45,4 +57,15 @@ export const colorFormatter = (
   }
 };
 
+export const formatOklchWithAlpha = (colorValue: string, alpha: number) => {
+  const formatted = colorFormatter(colorValue, "oklch");
+  if (!formatted.startsWith("oklch(")) {
+    return formatted;
+  }
+  return appendAlphaToOklch(formatted, alpha);
+};
+
 export const convertToHSL = (colorValue: string): string => colorFormatter(colorValue, "hsl");
+
+
+

@@ -6,6 +6,7 @@ import { useEditorStore } from "../../store/editor-store";
 import { COMMON_STYLES, defaultThemeState } from "../../config/theme";
 import { ThemeEditorState } from "@/types/editor";
 import { converter, formatHex, Hsl } from "culori";
+import { colorFormatter } from "@/utils/color-converter";
 import { debounce } from "@/utils/debounce";
 import { isDeepEqual } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,8 @@ function adjustColorByHsl(
   };
 
   const out = converter("hsl")(adjustedHsl as Hsl);
-  return formatHex(out);
+  const hex = formatHex(out);
+  return colorFormatter(hex, "oklch");
 }
 
 // Preset HSL adjustment values
@@ -243,3 +245,5 @@ const HslAdjustmentControls = () => {
 };
 
 export default HslAdjustmentControls;
+
+

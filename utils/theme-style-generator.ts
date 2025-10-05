@@ -261,7 +261,7 @@ module.exports = {
 
 export const generateThemeCode = (
   themeEditorState: ThemeEditorState,
-  colorFormat: ColorFormat = "hsl",
+  colorFormat: ColorFormat = "oklch",
   tailwindVersion: "3" | "4" = "3"
 ): string => {
   if (
@@ -303,3 +303,4 @@ export const generateTailwindConfigCode = (
   const themeStyles = themeEditorState.styles as ThemeStyles;
   return generateTailwindV3Config(themeStyles);
 };
+

@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { COMMON_STYLES, defaultThemeState } from "@/config/theme";
+import { colorFormatter } from "@/utils/color-converter";
 import { useAIThemeGenerationCore } from "@/hooks/use-ai-theme-generation-core";
 import { useControlsTabFromUrl, type ControlTab } from "@/hooks/use-controls-tab-from-url";
 import { useEditorStore } from "@/store/editor-store";
@@ -25,6 +26,29 @@ import { type FontInfo } from "@/types/fonts";
 import { ThemeEditorControlsProps, ThemeStyleProps } from "@/types/theme";
 import { buildFontFamily } from "@/utils/fonts";
 import { getAppliedThemeFont } from "@/utils/theme-fonts";
+
+const isCommonStyleKey = (
+  key: string
+): key is (typeof COMMON_STYLES)[number] =>
+  COMMON_STYLES.includes(key as (typeof COMMON_STYLES)[number]);
+
+const ensureOklchValue = (key: string, rawValue: string) => {
+  const trimmed = rawValue.trim();
+
+  if (trimmed.length === 0) {
+    return trimmed;
+  }
+
+  if (isCommonStyleKey(key)) {
+    return trimmed;
+  }
+
+  if (trimmed.toLowerCase().startsWith("oklch(")) {
+    return trimmed;
+  }
+
+  return colorFormatter(trimmed, "oklch");
+};
 
 const ThemeControlPanel = ({
   styles,
@@ -46,12 +70,17 @@ const ThemeControlPanel = ({
 
   const updateStyle = React.useCallback(
     <K extends keyof typeof currentStyles>(key: K, value: (typeof currentStyles)[K]) => {
-      // apply common styles to both light and dark modes
-      if (COMMON_STYLES.includes(key)) {
+      const keyAsString = String(key);
+      const nextValue =
+        typeof value === "string"
+          ? (ensureOklchValue(keyAsString, value) as (typeof currentStyles)[K])
+          : value;
+
+      if (isCommonStyleKey(keyAsString)) {
         onChange({
           ...styles,
-          light: { ...styles.light, [key]: value },
-          dark: { ...styles.dark, [key]: value },
+          light: { ...styles.light, [key]: nextValue },
+          dark: { ...styles.dark, [key]: nextValue },
         });
         return;
       }
@@ -60,7 +89,7 @@ const ThemeControlPanel = ({
         ...styles,
         [currentMode]: {
           ...currentStyles,
-          [key]: value,
+          [key]: nextValue,
         },
       });
     },
@@ -480,3 +509,19 @@ const ThemeControlPanel = ({
 };
 
 export default ThemeControlPanel;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

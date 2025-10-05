@@ -4,7 +4,7 @@ import { AnimationOptions, AnimationPlaybackControls, motion, TargetAndTransitio
 import { Button } from "@/components/ui/button";
 import { getPresetThemeStyles } from "@/utils/theme-preset-helper";
 import { cn } from "@/lib/utils";
-import { colorFormatter } from "@/utils/color-converter";
+import { formatOklchWithAlpha } from "@/utils/color-converter";
 import { ThemeEditorState } from "@/types/editor";
 import { useEffect, useRef } from "react";
 
@@ -113,7 +113,7 @@ export function ThemePresetButtons({
           <div className="flex flex-shrink-0" style={{ gap: `${gapPx}px` }}>
             {rowData!.presets.map((presetName, index) => {
               const themeStyles = getPresetThemeStyles(presetName)[mode];
-              const bgColor = colorFormatter(themeStyles.primary, "hsl", "4");
+              const backgroundColor = formatOklchWithAlpha(themeStyles.primary, 0.1);
               const isSelected = presetName === themeState.preset;
 
               return (
@@ -132,10 +132,7 @@ export function ThemePresetButtons({
                     )}
                     variant="ghost"
                     style={{
-                      backgroundColor: bgColor
-                        .replace("hsl", "hsla")
-                        .replace(/\s+/g, ", ")
-                        .replace(")", ", 0.10)"),
+                      backgroundColor,
                       color: themeStyles.foreground,
                     }}
                     onClick={() => applyThemePreset(presetName)}
@@ -186,3 +183,4 @@ function AnimatedRow({ children, target, options }: AnimatedRowProps) {
     </motion.div>
   );
 }
+

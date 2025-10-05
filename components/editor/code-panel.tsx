@@ -24,7 +24,6 @@ import { usePreferencesStore } from "@/store/preferences-store";
 import { generateThemeCode, generateTailwindConfigCode } from "@/utils/theme-style-generator";
 import { useThemePresetStore } from "@/store/theme-preset-store";
 import { useDialogActions } from "@/hooks/use-dialog-actions";
-import { ColorFormat } from "@/types";
 
 interface CodePanelProps {
   themeEditorState: ThemeEditorState;
@@ -38,10 +37,8 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
   const { handleSaveClick } = useDialogActions();
 
   const preset = useEditorStore((state) => state.themeState.preset);
-  const colorFormat = usePreferencesStore((state) => state.colorFormat);
   const tailwindVersion = usePreferencesStore((state) => state.tailwindVersion);
   const packageManager = usePreferencesStore((state) => state.packageManager);
-  const setColorFormat = usePreferencesStore((state) => state.setColorFormat);
   const setTailwindVersion = usePreferencesStore((state) => state.setTailwindVersion);
   const setPackageManager = usePreferencesStore((state) => state.setPackageManager);
   const hasUnsavedChanges = useEditorStore((state) => state.hasUnsavedChanges);
@@ -49,9 +46,8 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
   const isSavedPreset = useThemePresetStore(
     (state) => preset && state.getPreset(preset)?.source === "SAVED"
   );
-  const getAvailableColorFormats = usePreferencesStore((state) => state.getAvailableColorFormats);
 
-  const code = generateThemeCode(themeEditorState, colorFormat, tailwindVersion);
+  const code = generateThemeCode(themeEditorState, "oklch", tailwindVersion);
   const configCode = generateTailwindConfigCode(themeEditorState, tailwindVersion);
 
   const getRegistryCommand = (preset: string) => {
@@ -85,7 +81,6 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
     posthog.capture(event, {
       editorType: "theme",
       preset,
-      colorFormat,
       tailwindVersion,
     });
   };
@@ -178,10 +173,7 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
           value={tailwindVersion}
           onValueChange={(value: "3" | "4") => {
             setTailwindVersion(value);
-            if (value === "4" && colorFormat === "hsl") {
-              setColorFormat("oklch");
-              setActiveTab("index.css");
-            }
+            setActiveTab("index.css");
           }}
         >
           <SelectTrigger className="bg-muted/50 w-fit gap-1 border-none outline-hidden focus:border-none focus:ring-transparent">
@@ -190,18 +182,6 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
           <SelectContent className="z-99999">
             <SelectItem value="3">Tailwind v3</SelectItem>
             <SelectItem value="4">Tailwind v4</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={colorFormat} onValueChange={(value: ColorFormat) => setColorFormat(value)}>
-          <SelectTrigger className="bg-muted/50 w-fit gap-1 border-none outline-hidden focus:border-none focus:ring-transparent">
-            <SelectValue className="focus:ring-transparent" />
-          </SelectTrigger>
-          <SelectContent className="z-99999">
-            {getAvailableColorFormats().map((colorFormat) => (
-              <SelectItem key={colorFormat} value={colorFormat}>
-                {colorFormat}
-              </SelectItem>
-            ))}
           </SelectContent>
         </Select>
       </div>
@@ -274,3 +254,10 @@ const CodePanel: React.FC<CodePanelProps> = ({ themeEditorState }) => {
 };
 
 export default CodePanel;
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@ export function applyStyleToElement(
     new RegExp(`--${key}:\\s*[^;]+;?`, "g"), 
     ""
   ).trim();
-
+  console.log(`${cleanedStyle}--${key}: ${value};`)
   element.setAttribute(
     "style",
     `${cleanedStyle}--${key}: ${value};`

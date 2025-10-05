@@ -1,4 +1,4 @@
-import { colorFormatter } from "./color-converter";
+import { appendAlphaToOklch, colorFormatter } from "./color-converter";
 import { applyStyleToElement } from "./apply-style-to-element";
 import { ThemeEditorState } from "../types/editor";
 import { defaultThemeState } from "../config/theme";
@@ -11,14 +11,15 @@ export const getShadowMap = (themeEditorState: ThemeEditorState) => {
   };
 
   const shadowColor = styles["shadow-color"];
-  const hsl = colorFormatter(shadowColor, "hsl", "3");
+  const baseOklch = colorFormatter(shadowColor, "oklch");
   const offsetX = styles["shadow-offset-x"];
   const offsetY = styles["shadow-offset-y"];
   const blur = styles["shadow-blur"];
   const spread = styles["shadow-spread"];
-  const opacity = parseFloat(styles["shadow-opacity"]);
+  const parsedOpacity = Number.parseFloat(styles["shadow-opacity"]);
+  const opacity = Number.isNaN(parsedOpacity) ? 1 : parsedOpacity;
   const color = (opacityMultiplier: number) =>
-    `hsl(${hsl} / ${(opacity * opacityMultiplier).toFixed(2)})`;
+    appendAlphaToOklch(baseOklch, opacity * opacityMultiplier);
 
   const secondLayer = (fixedOffsetY: string, fixedBlur: string): string => {
     // Use the same offsetX as the first layer
@@ -73,3 +74,4 @@ export function setShadowVariables(themeEditorState: ThemeEditorState) {
     applyStyleToElement(root, name, value);
   });
 }
+
