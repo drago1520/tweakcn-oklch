@@ -13,7 +13,7 @@ if (!process.env.POLAR_WEBHOOK_SECRET) {
 }
 
 export const POST = Webhooks({
-  webhookSecret: process.env.POLAR_WEBHOOK_SECRET,
+  webhookSecret: process.env.POLAR_WEBHOOK_SECRET || '',
   onPayload: async ({ data, type }) => {
     if (
       type === "subscription.created" ||

@@ -7,7 +7,7 @@
     "build": "npm run generate-theme-registry && next build --turbopack",
     "start": "next start",
     "lint": "next lint",
-    "generate-theme-registry": "tsx scripts/generate-theme-registry.ts && tsx scripts/generate-registry.ts",
+    "generate-theme-registry": "tsx --env-file=.env scripts/generate-theme-registry.ts && tsx --env-file=.env scripts/generate-registry.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -73,7 +73,7 @@
     "cuid": "^3.0.0",
     "culori": "^4.0.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.42.0",
     "embla-carousel-react": "^8.6.0",
     "idb-keyval": "^6.2.2",
@@ -104,6 +104,7 @@
     "swr": "^2.3.3",
     "tailwind-merge": "^3.2.0",
     "tippy.js": "^6.3.7",
+    "ts-morph": "^27.0.0",
     "use-scramble": "^2.2.15",
     "use-stick-to-bottom": "^1.1.1",
     "vaul": "^1.1.2",
