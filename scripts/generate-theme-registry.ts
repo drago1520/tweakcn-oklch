@@ -3,6 +3,7 @@ import path from "path";
 
 import { generateThemeRegistryFromPreset } from "@/utils/registry/themes";
 import { defaultPresets } from "@/utils/theme-presets";
+import { config } from "dotenv";
 
 const THEMES_DIR = path.join(process.cwd(), "public", "r", "themes");
 config({ path: ".env" });
