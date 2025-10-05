@@ -5,6 +5,7 @@ import { generateThemeRegistryFromPreset } from "@/utils/registry/themes";
 import { defaultPresets } from "@/utils/theme-presets";
 
 const THEMES_DIR = path.join(process.cwd(), "public", "r", "themes");
+config({ path: ".env" });
 
 // Ensure the themes directory exists
 if (!fs.existsSync(THEMES_DIR)) {

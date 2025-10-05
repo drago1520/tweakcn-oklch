@@ -2,7 +2,9 @@ import fs from "fs";
 import path from "path";
 import { defaultPresets } from "../utils/theme-presets";
 import { generateThemeRegistryFromPreset } from "@/utils/registry/themes";
+import { config } from "dotenv";
 
+config({ path: ".env" });
 interface ThemeRegistry {
   $schema: string;
   name: string;
